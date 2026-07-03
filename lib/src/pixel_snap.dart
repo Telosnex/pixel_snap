@@ -27,12 +27,35 @@ class PixelSnap {
   static PixelSnap of(BuildContext context) {
     final override =
         context.dependOnInheritedWidgetOfExactType<PixelSnapOverride>();
-    return PixelSnap.custom(
-      devicePixelRatio:
-          override?.devicePixelRatio ?? MediaQuery.devicePixelRatioOf(context),
-      pixelSnapFunction: override?.pixelSnapFunction ?? _defaultPixelSnap,
+    return _cached(
+      override?.devicePixelRatio ?? MediaQuery.devicePixelRatioOf(context),
+      override?.pixelSnapFunction ?? _defaultPixelSnap,
     );
   }
+
+  static PixelSnap _cached(
+    double devicePixelRatio,
+    PixelSnapFunction pixelSnapFunction,
+  ) {
+    final key = _PixelSnapCacheKey(devicePixelRatio, pixelSnapFunction);
+    final cached = _cache[key];
+    if (cached != null) return cached;
+    // Tiny bounded FIFO cache. In practice apps use one devicePixelRatio and
+    // the default function; PixelSnapOverride may add a handful more. Avoid
+    // retaining arbitrarily many override closures forever while still
+    // removing the hot-path allocation from every generated widget build.
+    if (_cache.length >= _cacheMaxEntries) {
+      _cache.remove(_cache.keys.first);
+    }
+    return _cache[key] = PixelSnap.custom(
+      devicePixelRatio: devicePixelRatio,
+      pixelSnapFunction: pixelSnapFunction,
+    );
+  }
+
+  static const int _cacheMaxEntries = 16;
+  static final Map<_PixelSnapCacheKey, PixelSnap> _cache =
+      <_PixelSnapCacheKey, PixelSnap>{};
 
   /// Snaps the [value] to nearest physical pixel according to provided [mode].
   double call(double value, [PixelSnapMode mode = PixelSnapMode.snap]) {
@@ -55,6 +78,23 @@ class PixelSnap {
 
   final double devicePixelRatio;
   final PixelSnapFunction pixelSnapFunction;
+}
+
+class _PixelSnapCacheKey {
+  const _PixelSnapCacheKey(this.devicePixelRatio, this.pixelSnapFunction);
+
+  final double devicePixelRatio;
+  final PixelSnapFunction pixelSnapFunction;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _PixelSnapCacheKey &&
+        other.devicePixelRatio == devicePixelRatio &&
+        other.pixelSnapFunction == pixelSnapFunction;
+  }
+
+  @override
+  int get hashCode => Object.hash(devicePixelRatio, pixelSnapFunction);
 }
 
 /// Widget that allows overriding pixel snap configuration for subtree.

@@ -23,23 +23,33 @@ class PixelSnap {
     this.pixelSnapFunction = _defaultPixelSnap,
   });
 
-  /// Returns PixelSnap for the given build context.
+  /// Returns the resolved pixel snap configuration for [context].
+  ///
+  /// Install a [PixelSnapScope] below the app's [MediaQuery] to resolve the
+  /// device pixel ratio once for its subtree. Without a scope this falls back
+  /// to reading [MediaQuery] directly for backwards compatibility.
   static PixelSnap of(BuildContext context) {
-    final override =
-        context.dependOnInheritedWidgetOfExactType<PixelSnapOverride>();
-    return _cached(
-      override?.devicePixelRatio ?? MediaQuery.devicePixelRatioOf(context),
-      override?.pixelSnapFunction ?? _defaultPixelSnap,
-    );
+    final scoped = context
+        .dependOnInheritedWidgetOfExactType<_ResolvedPixelSnapScope>()
+        ?.pixelSnap;
+    return scoped ??
+        _cached(MediaQuery.devicePixelRatioOf(context), _defaultPixelSnap);
   }
 
   static PixelSnap _cached(
     double devicePixelRatio,
     PixelSnapFunction pixelSnapFunction,
   ) {
+    final last = _last;
+    if (last != null &&
+        last.devicePixelRatio == devicePixelRatio &&
+        last.pixelSnapFunction == pixelSnapFunction) {
+      return last;
+    }
+
     final key = _PixelSnapCacheKey(devicePixelRatio, pixelSnapFunction);
     final cached = _cache[key];
-    if (cached != null) return cached;
+    if (cached != null) return _last = cached;
     // Tiny bounded FIFO cache. In practice apps use one devicePixelRatio and
     // the default function; PixelSnapOverride may add a handful more. Avoid
     // retaining arbitrarily many override closures forever while still
@@ -47,13 +57,16 @@ class PixelSnap {
     if (_cache.length >= _cacheMaxEntries) {
       _cache.remove(_cache.keys.first);
     }
-    return _cache[key] = PixelSnap.custom(
+    final pixelSnap = PixelSnap.custom(
       devicePixelRatio: devicePixelRatio,
       pixelSnapFunction: pixelSnapFunction,
     );
+    _cache[key] = pixelSnap;
+    return _last = pixelSnap;
   }
 
   static const int _cacheMaxEntries = 16;
+  static PixelSnap? _last;
   static final Map<_PixelSnapCacheKey, PixelSnap> _cache =
       <_PixelSnapCacheKey, PixelSnap>{};
 
@@ -97,6 +110,39 @@ class _PixelSnapCacheKey {
   int get hashCode => Object.hash(devicePixelRatio, pixelSnapFunction);
 }
 
+/// Resolves the device pixel ratio once for an application subtree.
+///
+/// Place this below the app's [MediaQuery], typically in `MaterialApp.builder`
+/// or `WidgetsApp.builder`:
+///
+/// ```dart
+/// MaterialApp(
+///   builder: (context, child) => PixelSnapScope(child: child!),
+/// )
+/// ```
+///
+/// Descendant pixel-snapped widgets then perform one simple inherited lookup
+/// instead of independently resolving [MediaQuery.devicePixelRatioOf].
+class PixelSnapScope extends StatelessWidget {
+  const PixelSnapScope({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return _ResolvedPixelSnapScope(
+      pixelSnap: PixelSnap._cached(
+        MediaQuery.devicePixelRatioOf(context),
+        _defaultPixelSnap,
+      ),
+      child: child,
+    );
+  }
+}
+
 /// Widget that allows overriding pixel snap configuration for subtree.
 ///
 /// For example the code below disables pixel snapping for the subtree
@@ -110,21 +156,46 @@ class _PixelSnapCacheKey {
 ///     child: Container( // this container will not be pixel snapped.
 /// )));
 /// ```
-class PixelSnapOverride extends InheritedWidget {
+class PixelSnapOverride extends StatelessWidget {
   const PixelSnapOverride({
     super.key,
     this.devicePixelRatio,
     this.pixelSnapFunction,
-    required super.child,
+    required this.child,
   });
 
   final double? devicePixelRatio;
   final PixelSnapFunction? pixelSnapFunction;
+  final Widget child;
 
   @override
-  bool updateShouldNotify(covariant PixelSnapOverride oldWidget) {
-    return devicePixelRatio != oldWidget.devicePixelRatio ||
-        pixelSnapFunction != oldWidget.pixelSnapFunction;
+  Widget build(BuildContext context) {
+    final parent = context
+        .dependOnInheritedWidgetOfExactType<_ResolvedPixelSnapScope>()
+        ?.pixelSnap;
+    return _ResolvedPixelSnapScope(
+      pixelSnap: PixelSnap._cached(
+        devicePixelRatio ??
+            parent?.devicePixelRatio ??
+            MediaQuery.devicePixelRatioOf(context),
+        pixelSnapFunction ?? parent?.pixelSnapFunction ?? _defaultPixelSnap,
+      ),
+      child: child,
+    );
+  }
+}
+
+class _ResolvedPixelSnapScope extends InheritedWidget {
+  const _ResolvedPixelSnapScope({
+    required this.pixelSnap,
+    required super.child,
+  });
+
+  final PixelSnap pixelSnap;
+
+  @override
+  bool updateShouldNotify(covariant _ResolvedPixelSnapScope oldWidget) {
+    return pixelSnap != oldWidget.pixelSnap;
   }
 }
 

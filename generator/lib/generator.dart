@@ -82,7 +82,7 @@ class Generator {
       ...contents.classes.map((e) => e.className)
     ].join(', ');
 
-    _buffer.writeln('export \'package:flutter/$name.dart\' hide $classes;');
+    _buffer.writeln('export \'package:${name}_ui/${name}_ui.dart\' hide $classes;');
     _buffer.writeln('export \'widgets.dart\';');
 
     return _buffer.toString();

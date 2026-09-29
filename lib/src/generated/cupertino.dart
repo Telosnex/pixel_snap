@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-export 'package:flutter/cupertino.dart'
+export 'package:cupertino_ui/cupertino_ui.dart'
     hide
         RawImage,
         ScrollController,

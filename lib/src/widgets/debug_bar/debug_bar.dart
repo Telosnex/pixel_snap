@@ -1,7 +1,7 @@
 // ignore_for_file: unused_element
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show Colors;
+import 'package:material_ui/material_ui.dart' show Colors;
 import 'package:flutter/widgets.dart' as original;
 
 import '../../generated/widgets.dart';
@@ -165,7 +165,6 @@ class _OverrideButton extends StatelessWidget {
   final _PixelSnapState state;
 
   const _OverrideButton({
-    super.key,
     this.ratio,
     required this.state,
   });
@@ -191,22 +190,22 @@ class _OverrideButton extends StatelessWidget {
 Widget _buttonBuilder(BuildContext context, ButtonState state, Widget? child) {
   late BoxDecoration decoration;
 
-  var backgroundColor = Colors.white.withOpacity(0.05);
+  var backgroundColor = Colors.white.withValues(alpha: 0.05);
   if (state.hovered) {
     backgroundColor =
-        backgroundColor.withOpacity(backgroundColor.opacity + 0.1);
+        backgroundColor.withValues(alpha: backgroundColor.a + 0.1);
   }
   if (state.pressed) {
     backgroundColor =
-        backgroundColor.withOpacity(backgroundColor.opacity + 0.1);
+        backgroundColor.withValues(alpha: backgroundColor.a + 0.1);
   }
   if (state.focused) {
     backgroundColor =
-        backgroundColor.withOpacity(backgroundColor.opacity + 0.1);
+        backgroundColor.withValues(alpha: backgroundColor.a + 0.1);
   }
   if (state.selected) {
     backgroundColor =
-        backgroundColor.withOpacity(backgroundColor.opacity + 0.2);
+        backgroundColor.withValues(alpha: backgroundColor.a + 0.2);
   }
 
   decoration = BoxDecoration(

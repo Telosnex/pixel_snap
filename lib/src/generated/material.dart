@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-export 'package:flutter/material.dart'
+export 'package:material_ui/material_ui.dart'
     hide
         RawImage,
         ScrollController,

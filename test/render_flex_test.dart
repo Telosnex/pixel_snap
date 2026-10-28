@@ -921,10 +921,12 @@ void main() {
       expect(box3.size, const Size(100.0, 100.0));
     });
 
-    // Flutter 3.38: Baseline alignment intrinsics now return 0.0 instead of throwing
+    // Flutter 3.38: Baseline alignment intrinsics now return 0.0 instead of
+    // throwing. The child must answer getDryBaseline: a RenderDecoratedBox
+    // without a child asserts in Flutter 3.47.
     test('Intrinsics return 0.0 if alignment is baseline', () {
-      final RenderDecoratedBox box = RenderDecoratedBox(
-        decoration: const BoxDecoration(),
+      final RenderConstrainedBox box = RenderConstrainedBox(
+        additionalConstraints: const BoxConstraints(),
       );
       final RenderFlex flex = RenderFlex(
         pixelSnap: pixelSnap,

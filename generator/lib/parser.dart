@@ -190,7 +190,7 @@ class Parser {
       // Copy private helper classes needed for Text selection
       for (final name in [
         '_SelectableTextContainer',
-        '_SelectableTextContainerState', 
+        '_SelectableTextContainerState',
         '_SelectableTextContainerDelegate',
         '_RichText',
       ]) {

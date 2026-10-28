@@ -25,7 +25,7 @@ class Generator {
     _buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
     // There are still some asserts in Flutter code
     _buffer.writeln(
-        "// ignore_for_file: unnecessary_null_comparison, deprecated_member_use, deprecated_member_use_from_same_package");
+        "// ignore_for_file: unnecessary_null_comparison, deprecated_member_use, deprecated_member_use_from_same_package, implementation_imports");
 
     final classes = _ourCustomClasses.join(', ');
     _buffer.writeln('import \'../pixel_snap.dart\';');
@@ -45,10 +45,13 @@ class Generator {
     _buffer.writeln('import \'dart:math\' show min, max;');
     _buffer.writeln('import \'dart:io\' show File;');
     // Conditional imports for platform-specific Image/Web support
-    _buffer.writeln("import 'package:flutter/src/painting/_web_image_info_io.dart'");
-    _buffer.writeln("    if (dart.library.js_interop) 'package:flutter/src/painting/_web_image_info_web.dart';");
+    _buffer.writeln(
+        "import 'package:flutter/src/painting/_web_image_info_io.dart'");
+    _buffer.writeln(
+        "    if (dart.library.js_interop) 'package:flutter/src/painting/_web_image_info_web.dart';");
     _buffer.writeln("import 'package:flutter/src/widgets/_web_image_io.dart'");
-    _buffer.writeln("    if (dart.library.js_interop) 'package:flutter/src/widgets/_web_image_web.dart';");
+    _buffer.writeln(
+        "    if (dart.library.js_interop) 'package:flutter/src/widgets/_web_image_web.dart';");
 
     _buffer.writeln('export \'package:flutter/widgets.dart\' hide $classes;');
     _buffer.writeln('import \'../forked/render_flex.dart\';');
@@ -58,8 +61,10 @@ class Generator {
     _buffer.writeln('import \'../forked/raw_image.dart\';');
 
     // Constants and typedefs needed for Text selection support
-    _buffer.writeln('const double _kSelectableVerticalComparingThreshold = 3.0;');
-    _buffer.writeln('typedef _SelectionInfo = ({int contentLength, SelectedContentRange? range});');
+    _buffer
+        .writeln('const double _kSelectableVerticalComparingThreshold = 3.0;');
+    _buffer.writeln(
+        'typedef _SelectionInfo = ({int contentLength, SelectedContentRange? range});');
 
     for (final c in contents.classes) {
       _buffer.writeln();
@@ -82,7 +87,8 @@ class Generator {
       ...contents.classes.map((e) => e.className)
     ].join(', ');
 
-    _buffer.writeln('export \'package:${name}_ui/${name}_ui.dart\' hide $classes;');
+    _buffer.writeln(
+        'export \'package:${name}_ui/${name}_ui.dart\' hide $classes;');
     _buffer.writeln('export \'widgets.dart\';');
 
     return _buffer.toString();

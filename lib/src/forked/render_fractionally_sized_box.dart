@@ -8,7 +8,8 @@ import '../pixel_snap_ext.dart';
 ///
 /// Extends Flutter's implementation to add pixel snapping to constraints
 /// and alignment.
-class RenderFractionallySizedOverflowBox extends rendering.RenderFractionallySizedOverflowBox {
+class RenderFractionallySizedOverflowBox
+    extends rendering.RenderFractionallySizedOverflowBox {
   RenderFractionallySizedOverflowBox({
     super.child,
     super.widthFactor,
@@ -121,19 +122,20 @@ class RenderFractionallySizedOverflowBox extends rendering.RenderFractionallySiz
           child!.getDryLayout(_getInnerConstraintsPixelSnapped(constraints));
       return constraints.constrain(childSize);
     }
-    return constraints
-        .constrain(_getInnerConstraintsPixelSnapped(constraints).constrain(Size.zero));
+    return constraints.constrain(
+        _getInnerConstraintsPixelSnapped(constraints).constrain(Size.zero));
   }
 
   @override
   void performLayout() {
     if (child != null) {
-      child!.layout(_getInnerConstraintsPixelSnapped(constraints), parentUsesSize: true);
+      child!.layout(_getInnerConstraintsPixelSnapped(constraints),
+          parentUsesSize: true);
       size = constraints.constrain(child!.size);
       alignChild();
     } else {
-      size = constraints
-          .constrain(_getInnerConstraintsPixelSnapped(constraints).constrain(Size.zero));
+      size = constraints.constrain(
+          _getInnerConstraintsPixelSnapped(constraints).constrain(Size.zero));
     }
   }
 }

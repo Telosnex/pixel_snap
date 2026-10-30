@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pixel_snap:
+  pixel_snap_fork:
     path: ../
 
 dev_dependencies:

@@ -1,9 +1,9 @@
 import 'package:flutter/rendering.dart' hide RenderFractionallySizedOverflowBox;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixel_snap/src/forked/render_fractionally_sized_box.dart';
-import 'package:pixel_snap/src/pixel_snap.dart';
-import 'package:pixel_snap/src/pixel_snap_ext.dart';
-import 'package:pixel_snap/src/widgets/pixel_snap_size.dart';
+import 'package:pixel_snap_fork/src/forked/render_fractionally_sized_box.dart';
+import 'package:pixel_snap_fork/src/pixel_snap.dart';
+import 'package:pixel_snap_fork/src/pixel_snap_ext.dart';
+import 'package:pixel_snap_fork/src/widgets/pixel_snap_size.dart';
 
 import 'test_rendering.dart';
 

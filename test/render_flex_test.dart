@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart' hide RenderFlex;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixel_snap/src/forked/render_flex.dart';
-import 'package:pixel_snap/src/pixel_snap.dart';
+import 'package:pixel_snap_fork/src/forked/render_flex.dart';
+import 'package:pixel_snap_fork/src/pixel_snap.dart';
 import 'test_rendering.dart';
 
 void _setFlex(RenderBox child, int? flex) {

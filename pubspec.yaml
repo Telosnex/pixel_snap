@@ -1,7 +1,9 @@
-name: pixel_snap
+name: pixel_snap_fork
 description: Sharp looking Flutter applications at any pixel scaling factor.
 version: 0.1.5
-homepage: https://github.com/irondash/pixel_snap
+homepage: https://github.com/Telosnex/pixel_snap
+repository: https://github.com/Telosnex/pixel_snap
+issue_tracker: https://github.com/Telosnex/pixel_snap/issues
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

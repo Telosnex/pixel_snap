@@ -69,7 +69,7 @@ Now this already looks like an impovement, but still seems very manual. And what
 Why yes, we can. PixelSnap comes with thin wrappers around many Flutter widgets that already do the pixel snapping for you. To use this, simply import
 
 ```dart
-import 'package:pixel_snap/widgets.dart';
+import 'package:pixel_snap_fork/widgets.dart';
 ```
 
 instead of the standard
@@ -83,8 +83,8 @@ This replaces some of the basic Flutter widgets with pixel-snapping alternatives
 If you're using material or cupertino import this instead:
 
 ```dart
-import 'package:pixel_snap/material.dart';
-import 'package:pixel_snap/cupertino.dart';
+import 'package:pixel_snap_fork/material.dart';
+import 'package:pixel_snap_fork/cupertino.dart';
 ```
 
 Note that this will reexport the original (unmodified) material and cupertino widgets in additon to the pixel-snapped alternatives to standard widgets.

@@ -1,4 +1,4 @@
-import 'package:pixel_snap/material.dart';
+import 'package:pixel_snap_fork/material.dart';
 
 void main() {
   runApp(const MainApp());

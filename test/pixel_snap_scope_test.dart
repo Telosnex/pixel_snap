@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pixel_snap/pixel_snap.dart';
+import 'package:pixel_snap_fork/pixel_snap.dart';
 
 void main() {
   testWidgets('scope resolves and shares PixelSnap for its subtree',
